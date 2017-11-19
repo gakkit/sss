@@ -1,0 +1,88 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% load myapp_extras %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static "myapp/css/edit_asin.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "myapp/datatables/datatables.min.css" %}">
+<script type="text/javascript" src="{% static "myapp/datatables/datatables.min.js" %}"></script>
+<style type="text/css">
+table.dataTable thead .sorting{background-image:url("{% static "myapp/datatables/sort_both.png" %}")}
+table.dataTable thead .sorting_asc{background-image:url("{% static "myapp/datatables/sort_asc.png" %}")}
+table.dataTable thead .sorting_desc{background-image:url("{% static "myapp/datatables/sort_desc.png" %}")}
+table.dataTable thead .sorting_asc_disabled{background-image:url("{% static "myapp/datatables/sort_asc_disabled.png" %}")}
+table.dataTable thead .sorting_desc_disabled{background-image:url("{% static "myapp/datatables/sort_desc_disabled.png" %}")}
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#example').DataTable( {
+        "columnDefs": [
+            { "visible": false, "targets": 0 }
+        ]
+    });
+
+    $(".eaText").focus(function() {
+        placeholder = $(this).attr("placeholder");
+        $(this).attr("placeholder", "");
+        $(this).append("<data id='var0' style='display:hidden'>" + placeholder + "</data>"); // temp store the string
+    })
+    $(".eaText").blur(function() {
+        placeholder = $("#var0").text();
+        $(this).attr("placeholder", placeholder);
+    })
+
+    $("#submit").click(function() {
+        var asins = $(".eaText").val().trim().split(/\s+/g);
+        for (i in asins) {
+            if (/[A-Z\d]{10}/g.test(asins[i]) == false) {
+                $(".eaText").focus();
+                tip('您输入的ASIN格式有误。');
+                return false 
+            }
+        }
+        var country = $(".eaSelect").val();
+        if (/[A-Z]{2}/g.test(country) == false){
+            $(".eaSelect").focus();
+            tip('请选择国家。');
+            return false
+        }
+    })
+});
+
+function tip(string) {
+    $("#subWarnText").text("提示："+string);
+}
+</script>
+{% endblock %}
+{% block left %}
+{% endblock %}
+
+{% block right %}
+    <h1>批量添加 ASIN 到「{{ genre.name }}」组</h1>
+    <p class="warning"><i class="fa fa-warning"></i>请仔细阅读说明后进行操作，否则可能造成数据出错。</p>
+    <p><i class="fa fa-asterisk"></i>请将ASIN按照一行一个的格式放到下面的输入框。</p>
+    <p><i class="fa fa-asterisk"></i>一次性只能提交同一个国家的ASIN。</p>
+
+<form action="{% url 'myapp:addAsinAction' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="genre" value="{{ genre.pk }}"></input>
+    <div class="textDiv">
+    <textarea name="asins" class="input eaText" placeholder="粘贴ASIN到这里..." required></textarea>
+    </div>
+    <div class="selectDiv">
+        <select name="country" class="select eaSelect">
+            <option selected disabled>未选择国家</option>
+            <option value="US">US 美国</option>
+            <option value="UK">UK 英国</option>
+            <option value="ES">ES 西班牙</option>
+            <option value="DE">DE 德国</option>
+            <option value="JP">JP 日本</option>
+            <option value="FR">FR 法国</option>
+            <option value="IT">IT 意大利</option>
+            <option value="CA">CA 加拿大</option>
+        </select>
+    </div>
+    <button id="submit" class="blue">提交</button>
+    <p class="warning" id="subWarnText" style="margin-top:5px;"></p>
+</form>
+{% endblock %}
+

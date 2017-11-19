@@ -1,0 +1,182 @@
+# 用于快速存一批asin 到数据库，以免每次我都要手动去处理
+# 直接在django shell 中import 就会运行下面的命令了。
+
+
+# suaoki 美国 大部分asin：
+asins = '''B00YH0Z9G4
+B00YH0ZFIQ
+B01AD7IN12
+B0166NXRCM
+B0166NXPGK
+B01AJH1OOY
+B01AJH1OOO
+B072KQKGCY
+B071XHH933
+B071KKHXX9
+B071GYHYMV
+B013UCC65G
+B013UCC9YE
+B01N68TDD7
+B01MSR4J6A
+B01AD7IN4O
+B01N2HHU2O
+B01MUI349K
+B01NB0A8SP
+B01LYQOA4H
+B072R2YJ9V
+B015O7AIIC
+B0747MVLKP
+B01E4XXDJI
+B0185CYFE6
+B07517GX3Q
+B0142TA8UG
+B018TY8WWG
+B018GE8JPY
+B0722XB3VQ
+B01DXZ2QGY
+B01DXYNGA0
+B06ZXYVG4G
+B01M260BAN
+B074FXXDNF
+B0751BZJT9
+B0742YLHT9
+B07432VBX8
+B018TY8ZYQ
+B018FWFAQI
+B018FWF7X4
+B0722L6HJ5
+B071YPS2J9
+B074MTMJF5
+B074N1YV7S
+B074N2956R
+B074MZVK2D
+B018FVPLMW
+B018FVPNDY
+B01HB4UPO8
+B074N72XGV
+B074MTMFWX
+B01AUI2FRC
+B01MYABSZR
+B01N130X0A
+B0736R6294
+B0736RXQG7
+B01HB4Z2S2
+B01H6G3B0Q
+B01H6GQJHS
+B0716ZNK2C
+B06Y447YNQ
+B072V8BP29
+B07289P67Y
+B072V6NTQD
+B07374QD33
+B01LYGF7WV
+B073QLRRGV
+B01M4GA3C8
+B01MDJZA1N
+B06X91L8DB
+B06XW2HNWW
+B01DP3ZWCY
+B01FH0X4OG
+B01JIQGH6M
+B073VN7VCK
+B01I6KQWG6
+B01I6KQXB0
+B01H1OU81S
+B06XHXZ8JX
+B06XHZLT8N
+B06XHZF7R8
+B06XHXHBMK
+B01MU4XPHF
+B01N5JQW0R
+B01N1WNUQO
+B01N9LXV1T
+B01E3NRE30
+B01FFADT48
+B01L6GEFRA
+B01MT9OA0S
+B01MR6L40I
+B0736RGV3W
+B0736PGMPX
+B0736QNQVF
+B0736SC6MV
+B01NBVC05G
+B01MZAD9CR
+B01N11IT93
+B06WVRKYGZ
+B06X1H3CW1
+B06X1F6X2X
+B01BV9VI1I
+B01BV9W9LQ
+B01HJK0ZO4
+B01M15LIPP
+B01LXKQZPW
+B06Y44M7GL
+B06Y465Z6F
+B06Y3S7SRF
+B06Y43JV1Q
+B06Y3ZDMMJ
+B06Y431K7R
+B01LXWIKUG
+B01M15LCCW
+B072V4FCMM
+B072V4YX8Z
+B072V4WWJJ
+B01LXWIH44
+B07479QR67
+B073VM9KM9
+B0725ZRGXC'''
+
+asins = asins.strip().split('\n')
+
+from myapp.models import *
+
+sulei = User.objects.get(username='sulei')
+tag = Tag(user=sulei, name='美国站')
+tag.save()
+try:
+    for a in asins:
+        if not Asin.objects.get(value=a): # 以免重复添加
+            asin = Asin(user=sulei, value=a, country='US')
+            asin.save()
+            asin.tags.add(tag)
+except:
+    pass
+
+
+
+
+
+# # 最后一个是老ASIN，它的新ASIN是 B01NAPYGUF 
+# UK_ASIN = [
+#     'B06XSBJJQG', 'B072M93D9R', 'B071NGG42G', 'B01KUI22VQ', 'B06WVFLK4C', 
+#     'B06W5NKDWF', 'B01M8IBTVU', 'B07141NCDG', 'B0762PFB4F', 'B01MU7FLN9',
+# ]
+
+# UK_SELLER = ['A25DKGOQ5SQ3PA', 'AWPA24GC2QA1D']
+
+# from myapp.models import *
+
+# michael = User.objects.first()
+# michael.first_name = 'Michael'
+# michael.last_name = 'Tan'
+# michael.email = 'ruxtain@foxmail.com'
+# michael.save()
+# Profile(user=michael, vip=1, balance=0, phone_number="15084887874").save()
+# t = Tag(user=michael, name='英国站')
+# t.save()
+
+# try:
+#     for i in UK_SELLER:
+#         store = Store(user=michael, seller_id=i) # 给用户添加一个 store
+#         store.save()
+# except:
+#     pass
+
+# t = Tag.objects.first()
+# try:
+#     for a in UK_ASIN:
+#         asin = Asin(user=michael, value=a, country='UK')
+#         asin.save()
+#         asin.tags.add(t)
+# except:
+#     pass

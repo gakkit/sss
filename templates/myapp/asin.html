@@ -1,0 +1,69 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block head %}
+
+<link rel="stylesheet" type="text/css" href="{% static "myapp/css/genre.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "myapp/datatables/datatables.min.css" %}">
+<script type="text/javascript" src="{% static "myapp/js/jquery-3.2.1.min.js" %}"></script>
+<script type="text/javascript" src="{% static "myapp/datatables/datatables.min.js" %}"></script>
+<script type="text/javascript" src="{% static "myapp/chartjs/chart.min.js" %}"></script>
+<style type="text/css">
+table.dataTable thead .sorting{background-image:url("{% static "myapp/datatables/sort_both.png" %}")}
+table.dataTable thead .sorting_asc{background-image:url("{% static "myapp/datatables/sort_asc.png" %}")}
+table.dataTable thead .sorting_desc{background-image:url("{% static "myapp/datatables/sort_desc.png" %}")}
+table.dataTable thead .sorting_asc_disabled{background-image:url("{% static "myapp/datatables/sort_asc_disabled.png" %}")}
+table.dataTable thead .sorting_desc_disabled{background-image:url("{% static "myapp/datatables/sort_desc_disabled.png" %}")}   
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#example').DataTable();
+} );
+</script>
+{% endblock %}
+{% block right %}
+<h1>{{ asin.value }}</h1>
+<p>{{ asin.data_set.first.title }}</p>
+<div>
+<canvas id="myChart" width="400" height="100"></canvas> 
+<!-- the width/height only determines the ratio of the rectangle -->
+</div>
+<script>
+var ctx = document.getElementById("myChart").getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        // labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: [
+            {% for data in asin.data_set.all.reverse %}
+            "{{ data.date | date:'Y.m.d' }}",
+            {% endfor %}
+        ],
+        datasets: [{
+            label: '# Rank',
+            data: [
+                {% for data in asin.data_set.all.reverse %}
+                {{ data.rank }},
+                {% endfor %}
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:false
+                }
+            }]
+        },
+        title: {
+            display: true,
+            text: '大类排名变化图',
+            fontSize: 20,
+        }
+    }
+});
+</script>
+
+{% endblock %}
+

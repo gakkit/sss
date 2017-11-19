@@ -1,0 +1,29 @@
+#geNameH1 {float: left;}
+.geDate {float: left;position: relative; font-size: 12px; color: #aaa;position: relative; top:7px; left:10px;}
+
+.geTextarea {
+    width: 130px;
+    height: 200px;
+    font-size: 15px;
+    font-family: courier;
+    overflow-y: scroll;
+}
+
+table.display {
+    padding-top: 30px; /* this is based on the height of menu bar, so the fixed table header won't be hidden */
+}
+
+table.display {
+ font-size: 13px;   
+}
+
+[class^="dataTables"] {
+    font-size: 13px;
+}
+
+form {display: inline;}
+
+/*buttons*/
+button.geButton {
+    margin: 10px;
+}

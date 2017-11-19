@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSS亚马逊运营数据抓取工具</title>
+    <!-- custom-theme -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" type="text/css" href="{% static "myapp/css/login.css" %}">
+</head>
+<body>
+<div class="backDiv"></div>
+<div class="centerDiv">
+<br><br>
+    <h1 class="login-header">欢迎注册SSS</h1>
+    <p class="subTitle">一心只为亚马逊卖家服务</p>
+    <hr class="centerHr">
+    <form class="loginForm" action="" method="post">
+        <div class="slot username">
+            <span class="label">登录邮箱</span>
+            <input type="email" name="username" class="email" placeholder="您的邮箱" required>
+            <div class="clear"></div>
+        </div>
+        <div class="slot password">
+            <span class="label">账户密码</span>
+            <input type="password" name="password" class="password" placeholder="SSS密码" required>
+            <div class="clear"></div>
+        </div>
+        <div class="slot password">
+            <span class="label">再次输入</span>
+            <input type="password" name="password" class="password" placeholder="SSS密码" required>
+            <div class="clear"></div>
+        </div>        
+        <br>
+        <button class="loginBtn">注册</button>
+    </form>
+    <hr class="centerHr">
+    <p class="subTitle">还没有账户，点击这里<a href="{% url "myapp:signup" %}">注册</a>。</p>
+</div>
+</body>
+</html>

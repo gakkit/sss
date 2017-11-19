@@ -1,0 +1,95 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% load myapp_extras %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static "myapp/css/edit_asin.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "myapp/datatables/datatables.min.css" %}">
+<script type="text/javascript" src="{% static "myapp/datatables/datatables.min.js" %}"></script>
+<style type="text/css">
+table.dataTable thead .sorting{background-image:url("{% static "myapp/datatables/sort_both.png" %}")}
+table.dataTable thead .sorting_asc{background-image:url("{% static "myapp/datatables/sort_asc.png" %}")}
+table.dataTable thead .sorting_desc{background-image:url("{% static "myapp/datatables/sort_desc.png" %}")}
+table.dataTable thead .sorting_asc_disabled{background-image:url("{% static "myapp/datatables/sort_asc_disabled.png" %}")}
+table.dataTable thead .sorting_desc_disabled{background-image:url("{% static "myapp/datatables/sort_desc_disabled.png" %}")}
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#example').DataTable( {
+        "columnDefs": [
+            { "visible": false, "targets": 0 }
+        ]
+    });
+
+    // the next 3 paragraphs are all for the select all button 
+    $("#selectAllBtn").click(function() {
+        if ($("#selectAllData").val()==0) {
+            $("input[type='checkbox']").attr("checked", "true");
+            $("#selectAllData").val(1);
+            return false
+        } else {
+            $("input[type='checkbox']").removeAttr("checked");
+            $("#selectAllData").val(0);
+            return false
+        }  
+    });
+
+    $("#selectAllBtn").mouseover(function() {
+        if ($("#selectAllData").val()==1) {
+            $("#selectAllBtn").html("取消");
+        }
+    });
+
+    $("#selectAllBtn").mouseout(function() {
+        $("#selectAllBtn").html("全选");
+    });
+
+});
+
+</script>
+{% endblock %}
+{% block left %}
+{% endblock %}
+
+{% block right %}
+    <h1>从「{{ genre.name }}」组批量删除 ASIN</h1>
+    <p class="warning"><i class="fa fa-warning"></i>请仔细确认无误后删除。一旦删除，数据将不可恢复。</p>
+    <br><hr><br>
+
+<form action="{% url 'myapp:delAsinAction' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" value="{{ genre.id }}" name="genre"></input>
+    <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>勾选</th>
+                <th>ASIN</th>
+                <th>国家</th>
+                <th>标题</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bound in genre.bound_set.all %}
+            <tr>
+                <td>{{ bound.id }}</td>
+                <td>
+                    <div class="control" style="margin-top:5px;">
+                        <input class="control__input" id="{{ bound.id }}" name="pk_{{ bound.id }}" value="{{ bound.id }}" type="checkbox">
+                        <label class="control__label" for="{{ bound.id }}"></label>
+                    </div>
+                </td>
+                <td><a href="{% url 'myapp:asin' bound.asin.pk %}" target="_blank">{{ bound.asin.value }}</a></td>
+                <td>{{ bound.asin.country }}</td>
+                <td><a href="{{ bound.asin.url }}" target="_blank">{{ bound.asin.data_set.first.title }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>    
+    <br><hr><br>
+    <button id="selectAllBtn" class="blue">全选</button><data id="selectAllData" value="0"></data>
+    <button class="red">删除</button>
+</form>
+
+<br><br><br><br><br><br><br><br><br>
+{% endblock %}
+

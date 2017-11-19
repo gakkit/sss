@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SSS亚马逊数据监控器</title>
+    <link rel="stylesheet" type="text/css" href="{% static "myapp/css/base.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "myapp/css/iconfont.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "myapp/css/login.css" %}">
+    <script src="{% static "myapp/js/jquery-1.7.1.min.js" %}"></script>
+    <script src="{% static "myapp/js/login.js" %}"></script>
+</head>
+<body>
+    <!-- header 开始 -->
+    <div id="header"></div>
+    <!-- header 结束 -->
+
+    <!-- 大表单 -->
+    <div class="login-box">
+        <!-- 中间盒子 -->
+        <div class="box-con tran">
+            <!-- 登录开始 -->
+            <div class="login-con f-l">
+                <form action="{% url 'myapp:login' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+
+                    <input name="username" type="text" placeholder="邮箱" onblur="verify.verifyEmail(this)">
+
+                    <span class="error-notic">邮箱格式不正确</span>
+
+                </div>
+
+                <div class="form-group">
+
+                    <input name="password" type="password" placeholder="密码" onblur="verify.PasswordLenght(this)">
+
+                    <span class="error-notic">密码不正确</span>
+
+                </div>
+
+                <div class="form-group">
+
+                    <button type="submit" class="tran pr">
+
+                        <a href="" class="tran">登录</a>
+
+                        <img class="loading">
+
+                    </button>
+
+                </div>
+                </form>
+                <div class="from-line"></div>
+
+                <div class="form-group">
+
+                    <a href="javascript:;" class="move-signup a-tag tran blue-border">还没有帐号？免费注册<i class="iconfont tran">&#xe606;</i></a>
+
+                </div>
+
+                <div class="form-group">
+
+                    <a href="javascript:;" class="move-reset a-tag tran">忘记密码？重置 <i class="iconfont tran">&#xe606;</i></a>
+
+                </div>
+
+            </div>
+
+            <!-- 登录结束 -->
+
+            <!-- 注册开始 -->
+            <div class="signup f-l">
+
+                <div class="form-group">
+                    <div class="signup-form">
+
+                        <input type="text" placeholder="邮箱" class="email-mobile" onblur="verify.verifyEmail(this)">
+
+                    </div>
+
+                    <span class="error-notic">邮箱格式不正确</span>
+
+                </div>
+
+                <!-- 邮箱注册开始 -->
+                <div class="signup-email">
+
+                    <!-- 验证码开始 -->
+                    <div class="form-group">
+
+                        <input type="text" placeholder="邮箱验证码" onblur="verify.VerifyCount(this)">
+
+                        <span class="error-notic">验证码输入错误</span>
+
+                    </div>
+                    <!-- 验证码结束 -->
+                    <!-- 注册密码开始 -->
+                    <div class="form-group" id="equal1">
+
+                        <input type="password" placeholder="密码（字母+数字+特殊字符，8位-20位）" onblur="verify.PasswordLenght(this)">
+
+                        <span class="error-notic">密码强度不够且不能包含空格</span>
+
+                    </div>
+                    <!-- 注册密码结束 -->
+                    <!-- 再次输入密码开始 -->
+                    <div class="form-group" id="equal2">
+
+                        <input type="password" placeholder="再次输入密码" onblur="verify.PasswordEqual(this)">
+
+                        <span class="error-notic">与上面密码不符</span>
+
+                    </div>
+                    <!-- 再次输入密码结束 -->
+                    <!-- 公司名称开始 -->
+                    <div class="form-group">
+
+                        <input type="text" placeholder="公司名称">
+
+                    </div>
+                    <!-- 公司名称结束 -->
+                    <div class="form-group">
+
+                        <button type="submit" class="tran pr">
+
+                            <a href="#" class="tran">注册</a>
+
+                            <img class="loading" src="{% static "myapp/images/loading.gif" %}">
+
+                        </button>
+
+                    </div>
+
+                </div>
+                <!-- 邮箱注册结束 -->
+
+                <!-- 横线 -->
+                <div class="from-line"></div>
+                <!-- 横线结束 -->
+
+                <div class="form-group">
+
+                    <a href="javascript:;" class="move-login a-tag tran blue-border">已有帐号？登录<i class="iconfont tran">&#xe606;</i></a>
+
+                </div>
+
+            </div>
+
+            <!-- 注册结束 -->
+
+            <!-- 密码重置开始 -->
+            <div class="mimachongzhi f-l">
+
+                <div class="form-group">
+
+                    <input type="text" placeholder="请输入您的邮箱地址" onblur="verify.verifyEmail(this)">
+
+                    <span class="error-notic">邮箱格式不正确</span>
+
+                </div>
+
+                <div class="form-group">
+
+                    <button type="submit" class="tran pr">
+
+                        <a href="javascript:;" class="tran">发送重置密码邮件</a>
+
+                        <img class="loading" src="{% static "myapp/images/loading.gif" %}">
+
+                    </button>
+
+                </div>
+
+                <div class="from-line"></div>
+
+                <div class="form-group">
+
+                    <a href="javascript:;" class="move-signup   a-tag tran blue-border">还没有帐号？免费注册<i class="iconfont tran">&#xe606;</i></a>
+
+                </div>
+
+                <div class="form-group">
+
+                    <a href="javascript:;" class="move-login a-tag tran">已有帐号？登录<i class="iconfont tran">&#xe606;</i></a>
+
+                </div>
+
+            </div>
+
+            <!-- 密码重置结束 -->
+
+        </div>
+
+    </div>
+
+</body>
+</html>

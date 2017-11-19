@@ -1,0 +1,22 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static "myapp/css/edit_genre.css" %}">
+{% endblock %}
+
+{% block left %}
+<div class="wrapA">
+    <a href="{% url 'myapp:index' %}" class="sideA"><i class="fa fa-chevron-circle-left"></i>回到分组列表</a>
+</div>
+{% endblock %}
+
+{% block right %}
+<div class="agList">
+{% for genre in genres %}
+<span>{{ genre.name }}</span>
+{% endfor %}
+<span>Fake Group1</span>
+<span>Fake Group2</span>
+<span>Fake Group3</span>
+</div>
+{% endblock %}

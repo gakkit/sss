@@ -1,0 +1,129 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% load myapp_extras %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static "myapp/css/genre.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "myapp/datatables/datatables.min.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "myapp/datatables/fixedHeader.dataTables.css" %}">
+<script type="text/javascript" src="{% static "myapp/datatables/datatables.min.js" %}"></script>
+<script type="text/javascript" src="{% static "myapp/datatables/dataTables.fixedHeader.min.js" %}"></script>
+<style type="text/css">
+table.dataTable thead .sorting{background-image:url("{% static "myapp/datatables/sort_both.png" %}")}
+table.dataTable thead .sorting_asc{background-image:url("{% static "myapp/datatables/sort_asc.png" %}")}
+table.dataTable thead .sorting_desc{background-image:url("{% static "myapp/datatables/sort_desc.png" %}")}
+table.dataTable thead .sorting_asc_disabled{background-image:url("{% static "myapp/datatables/sort_asc_disabled.png" %}")}
+table.dataTable thead .sorting_desc_disabled{background-image:url("{% static "myapp/datatables/sort_desc_disabled.png" %}")}
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#example').DataTable( {
+        "columnDefs": [
+            { "visible": false, "targets": 0 }
+        ],
+        fixedHeader: {
+            header: true,
+            footer: true
+        },
+        "pageLength": 25,
+    });
+
+    $("#geNameH1").click(function() {
+        var name = $(this).text();
+        if ($("#geNameData").val()==0) {
+            $(this).html('<input id="renameInput" onkeydown="saveNewName(event);" class="input" type="text" style="width: 200px;font-size:22px;" value="' + name + '"><p class="warning">按下回车键确认重命名。</p>');
+            $("#renameInput").focus();
+            $("#geNameData").val("1");
+        };
+    })
+
+    $("#rmBtn").click(function() {
+        var reply = confirm('此举将抹掉该分组所有数据，您确定继续吗？(未来会设计成需要用户输入登录密码确认。)');
+        if (reply==false) {
+            return false;
+        }
+    })
+
+});
+
+function saveNewName(event) {
+    if (event.keyCode == 13) {
+        var name = $("#renameInput").val();
+        var pk = {{ genre.pk }};
+        $("#geNameH1").text(name);
+        $("#geNameData").val("0"); // make name editable again
+        $.ajax ({
+            type: 'POST',
+            url: '{% url "myapp:renGenreAction" %}',
+            data: { pk: pk, name: name, csrfmiddlewaretoken: "{{ csrf_token }}" },
+            success: function (data) {
+                if (data == 0) {
+                    console.log('successful!');
+                } else if (data == 1) {
+                    console.log('failed.');
+                }
+            } 
+        });           
+    }  
+}
+
+</script>
+{% endblock %}
+{% block left %}
+{% endblock %}
+{% block nav %}
+    <span class="navDivider"></span>
+    <a class="nav" href="{% url 'myapp:addAsin' genre.pk %}">添加ASIN</a>
+    <a class="nav" href="{% url 'myapp:delAsin' genre.pk %}">删除ASIN</a>
+    <a class="nav" href="{% url 'myapp:export' genre.pk %}">导出数据</a>
+    <form action="{% url 'myapp:delGenreAction' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="pk" value="{{ genre.pk }}"></input>
+    <a href="#" id="rmBtn" class="nav" style="color:#e66;">删除该组</a>
+    </form>
+{% endblock %}
+{% block right %}
+<h1 id="geNameH1">{{ genre.name }}</h1><data id="geNameData" value="0"></data>
+<p class="geDate">创建时间: {{ genre.date | date:"Y年m月d日 H:i" }}</p>
+<div style="clear:both;">
+<br>
+<hr>
+<p class="biggerText">{{ genre.comment }}</p>
+<hr>
+<br>
+<table id="example" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>ASIN</th>
+            <th>国家</th>
+            <th>抓取日期</th>
+            <th>大类排名</th>
+            <th>小类排名</th>
+            <th>星星数</th>
+            <th>评论数</th>
+            <th>大类变动</th>
+            <th>详情数据</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bound in genre.bound_set.all %}
+        <tr>
+            <td>{{ bound.asin.id }}</td>
+            <td><a href="{{ bound.asin.url }}" target="_blank">{{ bound.asin.value }}</a></td>
+            <td>{{ bound.asin.country }}</td>
+            <td>{{ bound.asin.data_set.first.date | date:'Y.m.d' }}</td>
+            <td>{{ bound.asin.data_set.first.rank }}</td>
+            <td>{{ bound.asin.data_set.first.rankie }}</td>
+            <td>{{ bound.asin.data_set.first.star }}</td>
+            <td>{{ bound.asin.data_set.first.review }}</td>
+            <td>{{ bound.asin.data_set.first | delta:'rank' }}</td>
+            <td><a href="{% url 'myapp:asin' bound.asin.pk %}" target="_blank">查看详情</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+<br>
+<br>
+{% endblock %}
+
