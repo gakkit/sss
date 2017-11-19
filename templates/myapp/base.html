@@ -9,9 +9,10 @@
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <title>{% block title %}{% endblock %}</title>
-
+    {% block head %}
+    {% endblock %}
+</head>
 <body>
-<a href="{% url 'myapp:logout' %}">登出</a>
 {% block body %}
 {% endblock %}
 </body>
