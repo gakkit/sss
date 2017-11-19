@@ -84,6 +84,16 @@ li:after, div:after, ul:after{
 }
 .login-box .form-group{
     margin-top: 20px;
+    position: relative;
+}
+.login-box .mailbox {
+    width:180px;
+}
+.login-box .form-group .send {
+    width:118px;
+    position: absolute;
+    top:0;
+    right:0;
 }
 
 .login-box input, .signup-form{
@@ -119,9 +129,6 @@ li:after, div:after, ul:after{
 }
 .login-box button a{
     display: block;
-}
-.login-box button a:hover{
-    padding-top: 3px;
 }
 .login-box button:hover{
     background-color: #0096da;
@@ -170,7 +177,6 @@ li:after, div:after, ul:after{
     width: 300px;
     margin: 0 10px;
 }
-
 
 .signup-form {
     margin-top: 20px;
