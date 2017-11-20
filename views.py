@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.datastructures import MultiValueDictKeyError # errors
 import django.contrib.auth as auth
 from myapp.models import *
+from myapp.utils import valid
 import re
 
 @login_required
@@ -38,6 +39,23 @@ def logout(request):
 
 def signup(request):
     return render(request, "myapp/signup.html", {})
+
+
+################# AJAX ####################
+
+def ajaxSendVerify(request):
+    email = request.POST['email']
+    # valid.send_email(email, 'test', '<h1>test</h1>')
+    return HttpResponse('0')
+
+
+
+
+
+
+
+
+# # 以下为旧代码
 
 @login_required
 def genrePage(request, pk):
