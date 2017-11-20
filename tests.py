@@ -1,2 +1,2 @@
 print('hello world x 2')
-# 不要再用 git add -A ，而是只add你改的文件
+# 改变一个文件，而不add到缓存区，然后就直接commit 会怎么样？
