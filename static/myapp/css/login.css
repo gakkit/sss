@@ -217,6 +217,12 @@ a.reacquire{
     color: #ff4e00;
     display: none;
 }
+button.unclickable {
+    background-color: #999999;
+}
+button.unclickable:hover {
+    background-color: #999999;
+}
 .login-footer{
     position: fixed;
     left: 0;

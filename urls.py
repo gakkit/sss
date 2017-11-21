@@ -11,4 +11,6 @@ urlpatterns = [
     url(r'^logout$', views.logout, name='logout'),
     url(r'^signup', views.signup, name='signup'),
 
+    # ajax
+    url(r'^ajax-send-verify$', views.ajaxSendVerify, name='ajaxSendVerify'),
 ]

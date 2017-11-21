@@ -102,11 +102,10 @@ var verify={
         var validateReg = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
         if(!validateReg.test(email)){
             showNotic($("#signup-email"));
-            // $(_this).addClass("unclickable");
+            $(_this).addClass("unclickable");
         }else{ // 邮箱合法
             hideNotic($("#signup-email"));
             if ($("#verifyTipA").text()=="发送验证码"){ // 确保不重复提交
-                $("#verifyTipSpan").show();
                 $("#verifyTipSpan").html("请留意您的收件箱，检查是否被归入垃圾邮件。");
                 $("#verifyTipA").html("<span id='time'>60</span>秒后可重发");
                 $("#sendVerifyButton").addClass("unclickable");
