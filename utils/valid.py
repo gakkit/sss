@@ -4,9 +4,32 @@
 # 发送验证码
 
 import smtplib
+import redis 
+import random
+import time
+
+# 使用redis注意需要后台启动 redis-server。不同平台可能略有差异，但是redis的后天必须一直开启，类似数据库。
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+
+
+def set_redis(user_email):
+    '''生成验证码'''
+    r = redis.StrictRedis()
+    code = str(random.uniform(0,1))[3:9]
+    print(code, '*'*80) # 方便测试、代替实际发邮件
+    while r.exists(user_email): # 不允许用户刷新后立刻重试
+        time.sleep(1)
+    r.set(user_email, code)
+    r.expire(user_email, 120) # 2分钟以内输入有效（考虑到用户还要花时间登录邮箱）
+
+def check_code(user_email, code):
+    r = redis.StrictRedis()
+    if r.exists(user_email):
+        if code in str(r.get(user_email)):
+            return 0
+    return 1
 
 def send_email(recipient, content_text, content_html):
     sender = "sss_service@sina.com"
@@ -25,7 +48,7 @@ def send_email(recipient, content_text, content_html):
     msg.attach(part2)
     s = smtplib.SMTP('smtp.sina.com')
     print("login ...")
-    s.login('sss_service', 'tan.1993')
+    s.login('sss_service', '') # 需要输入密码
     # sendmail function takes 3 arguments: sender's address, recipient's address
     # and message to send - here it is sent as one string.
     print("sending ...")

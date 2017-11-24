@@ -13,4 +13,5 @@ urlpatterns = [
 
     # ajax
     url(r'^ajax-send-verify$', views.ajaxSendVerify, name='ajaxSendVerify'),
+    url(r'^ajax-check-verify$', views.ajaxCheckVerify, name='ajaxCheckVerify'),
 ]

@@ -87,16 +87,6 @@ var verify={
             hideNotic(_this)
         }
     },//再次输入密码
-    VerifyValid:function(_this){
-        var _count="123456";
-        var _value=$(_this).val();
-        console.log(_value)
-        if(_value!=_count){
-            showNotic(_this)
-        }else{
-            hideNotic(_this)
-        }
-    },//验证验证码
     VerifySend: function(_this){
         var email = $("#signup-email").val();
         var validateReg = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
@@ -106,7 +96,7 @@ var verify={
         }else{ // 邮箱合法
             hideNotic($("#signup-email"));
             if ($("#verifyTipA").text()=="发送验证码"){ // 确保不重复提交
-                $("#verifyTipSpan").html("请留意您的收件箱，检查是否被归入垃圾邮件。");
+                $("#verifyTipDiv").html("请留意您的收件箱，检查是否被归入垃圾邮件。");
                 $("#verifyTipA").html("<span id='time'>60</span>秒后可重发");
                 $("#sendVerifyButton").addClass("unclickable");
                 $("#sendVerifyButton").attr("disabled", true); // 发送期间不允许再点击
@@ -116,6 +106,27 @@ var verify={
             }
         }
     }, // 发送验证码
+
+    ValidCode: function(_this) {
+        $("#verifyInput").keyup(function () {
+            var code = $(_this).val();
+            var email = $("#signup-email").val();
+            if (/^\d{6}$/.test(code)) {
+                $.ajax ({
+                    type: 'POST',
+                    url: '{% url "myapp:ajaxCheckVerify" %}',
+                    data: { email: email, code: code, csrfmiddlewaretoken: "{{ csrf_token }}"},
+                    success: function(data) {
+                        if (data=='0') {
+                            console.log('user email verified!');
+                        } else {
+                            console.log('verification failed!');
+                        }
+                    }
+                });
+            }
+        })
+    }// 提交并判断验证码是否输入正确
 
 }
 
@@ -193,7 +204,7 @@ function countDown() {
         <div class="signup f-l">
             <div class="form-group">
                 <div class="signup-form">
-                    <input id="signup-email" name="email" type="text" placeholder="邮箱" class="email-mobile" onblur="verify.verifyEmail(this)">
+                    <input id="signup-email" name="email" type="text" placeholder="邮箱" class="email-mobile" >
                 </div>
                 <span class="error-notic">邮箱格式不正确</span>
             </div>
@@ -201,12 +212,12 @@ function countDown() {
             <div class="signup-email">
                 <!-- 验证码开始 -->
                 <div class="form-group">
-                    <input type="text" placeholder="邮箱验证码" onblur="verify.VerifyValid(this)" class="mailbox">
+                    <input name="verifyInput" id="verifyInput" type="text" placeholder="邮箱验证码" onkeyup="verify.ValidCode(this)" class="mailbox">
                     <button id="sendVerifyButton" type="submit" class="send" onclick="verify.VerifySend(this)" >
                         <a id="verifyTipA" href="#" class="tran" >发送验证码</a>
                     </button>
                     <span class="error-notic"></span>
-                    <div id="verifyTipSpan"></div>
+                    <div id="verifyTipDiv"></div>
                 </div>
                 <!-- 验证码结束 -->
                 <!-- 注册密码开始 -->

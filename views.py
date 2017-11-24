@@ -44,11 +44,18 @@ def signup(request):
 ################# AJAX ####################
 
 def ajaxSendVerify(request):
+    '''点击发送验证码之后将邮箱地址发送到这里'''
     email = request.POST['email']
+    valid.set_redis(email) # 放入redis队列
     # valid.send_email(email, 'test', '<h1>test</h1>')
     return HttpResponse('0')
 
-
+def ajaxCheckVerify(request):
+    '''确认用户输入的验证码是否正确'''
+    email = request.POST['email']
+    code = request.POST['code']
+    result = str(valid.check_code(email, code))
+    return HttpResponse(result)
 
 
 
