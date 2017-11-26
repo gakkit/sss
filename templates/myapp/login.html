@@ -50,6 +50,21 @@ $(function(){
             'marginLeft':-640
         })
     });
+
+    $("#signupButton").click(function() {
+        // 提交注册的时候还需要点击一次
+        var code = $("#verifyInput").val();
+        var email = $("#signup-email").val();
+        var password1 = $("#equal1").val();
+        var password2 = $("#equal2").val();
+        if (password1 != password2) {
+            return false; // 禁止提交
+        }
+        if (!/\d{6}/.test(code)) {
+            return false;
+        }
+    }) // 注册按钮
+
 });
 //表单验证
 function showNotic(_this){
@@ -119,8 +134,12 @@ var verify={
                     success: function(data) {
                         if (data=='0') {
                             console.log('user email verified!');
+                            $("#verifyTipA").text('验证成功');
+                            $("#verifyInput").attr("disabled", true); // 正确输入后不允许修改
+                            $("#sendVerifyButton").removeClass("unclickable");
                         } else {
                             console.log('verification failed!');
+                            $("#verifyTipA").text('验证失败');
                         }
                     }
                 });
@@ -201,6 +220,8 @@ function countDown() {
         </div>
         <!-- 登录结束 -->
         <!-- 注册开始 -->
+        <form action="{% url 'myapp:signup' %}" method="post">
+        {% csrf_token %}
         <div class="signup f-l">
             <div class="form-group">
                 <div class="signup-form">
@@ -222,7 +243,7 @@ function countDown() {
                 <!-- 验证码结束 -->
                 <!-- 注册密码开始 -->
                 <div class="form-group" id="equal1">
-                    <input type="password" placeholder="密码（大小写字母+数字+符号，8位-20位）" onblur="verify.PasswordLenght(this)">
+                    <input name="password" type="password" placeholder="密码（大小写字母+数字+符号，8位-20位）" onblur="verify.PasswordLenght(this)">
                     <span class="error-notic">密码强度不够且不能包含空格</span>
                 </div>
                 <!-- 注册密码结束 -->
@@ -234,15 +255,16 @@ function countDown() {
                 <!-- 再次输入密码结束 -->
                 <!-- 公司名称开始 -->
                 <div class="form-group">
-                    <input type="text" placeholder="公司名称">
+                    <input name="company" id="company" type="text" placeholder="公司名称">
                 </div>
                 <!-- 公司名称结束 -->
                 <div class="form-group">
                     <button type="submit" class="tran pr">
-                        <a href="#" class="tran">注册</a>
+                        <a id="signupButton" class="tran">注册</a>
                     </button>
                 </div>
             </div>
+        </form>
             <!-- 邮箱注册结束 -->
             <!-- 横线 -->
             <div class="from-line"></div>

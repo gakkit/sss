@@ -10,7 +10,7 @@ import re
 @login_required
 def index(request):
     user = request.user
-    return render(request, "myapp/index.html", {})
+    return render(request, "myapp/index.html", {'user':user})
 
 def login(request):
     next = request.META['QUERY_STRING'] # 根据next的参数来决定跳转到哪里
@@ -38,7 +38,11 @@ def logout(request):
     return redirect("/login")
 
 def signup(request):
-    return render(request, "myapp/signup.html", {})
+    print(request.POST['email'])
+    print(request.POST['password'])
+    print(request.POST['company'])
+    # print(request.POST['verifyInput'])
+    return render(request, "myapp/index.html", {})
 
 
 ################# AJAX ####################
