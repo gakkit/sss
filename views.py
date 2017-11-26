@@ -38,25 +38,37 @@ def logout(request):
     return redirect("/login")
 
 def signup(request):
-    print(request.POST['email'])
-    print(request.POST['password'])
-    print(request.POST['company'])
-    # print(request.POST['verifyInput'])
-    return render(request, "myapp/index.html", {})
+    # 用户注册
+    username = request.POST['email']
+    password = request.POST['password']
+    company = request.POST['company']
+    user = User(username=username)
+    user.set_password(password)
+    user.save()
+    profile = Profile(user=user, company=company)
+    profile.save()
+    # # 用户登录，如果不登录，注册后会跳回登录界面
+    # user = auth.authenticate(request, username=username, password=password)
+    # auth.login(request, user)
+    return redirect('/')
 
 
 ################# AJAX ####################
 
 def ajaxSendVerify(request):
     '''点击发送验证码之后将邮箱地址发送到这里'''
-    email = request.POST['email']
-    valid.set_redis(email) # 放入redis队列
-    # valid.send_email(email, 'test', '<h1>test</h1>')
-    return HttpResponse('0')
+    email = request.POST['email'].strip().lower()
+    print('+'*80, email)
+    if User.objects.filter(username=email):
+        return HttpResponse(1) # 表示已经存在该用户名
+    else:
+        valid.set_redis(email) # 放入redis队列
+        # valid.send_email(email, 'test', '<h1>test</h1>')
+        return HttpResponse(0)
 
 def ajaxCheckVerify(request):
     '''确认用户输入的验证码是否正确'''
-    email = request.POST['email']
+    email = request.POST['email'].strip().lower()
     code = request.POST['code']
     result = str(valid.check_code(email, code))
     return HttpResponse(result)

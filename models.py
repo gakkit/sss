@@ -24,6 +24,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     vip = models.IntegerField(default=0) # 用户类型：0 免费用户，1 会员，2 超级会员
     balance = models.FloatField(default=0) # 账户余额
+    company = models.CharField(default='', max_length=200) # 公司名称
     phone_number = models.CharField(default='', max_length=20) # 电话号码
 
 class Store(models.Model):

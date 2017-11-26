@@ -109,16 +109,7 @@ var verify={
             showNotic($("#signup-email"));
             $(_this).addClass("unclickable");
         }else{ // 邮箱合法
-            hideNotic($("#signup-email"));
-            if ($("#verifyTipA").text()=="发送验证码"){ // 确保不重复提交
-                $("#verifyTipDiv").html("请留意您的收件箱，检查是否被归入垃圾邮件。");
-                $("#verifyTipA").html("<span id='time'>60</span>秒后可重发");
-                $("#sendVerifyButton").addClass("unclickable");
-                $("#sendVerifyButton").attr("disabled", true); // 发送期间不允许再点击
-                console.log('Send verification code...');
-                countDown();
-                ajaxSendVerify();
-            }
+            ajaxSendVerify() // 发送验证码的函数
         }
     }, // 发送验证码
 
@@ -158,8 +149,22 @@ function ajaxSendVerify() {
         url: '{% url "myapp:ajaxSendVerify" %}',
         data: { email: email, csrfmiddlewaretoken: "{{ csrf_token }}"},
         success: function(data) {
-            if (data=='0') {
-                console.log('verification code sent!');
+            if (data==0) { 
+                console.log('验证码已经发送');
+                hideNotic($("#signup-email"));
+                if ($("#verifyTipA").text()=="发送验证码"){ // 确保不重复提交
+                    $("#verifyTipDiv").html("请留意您的收件箱，检查是否被归入垃圾邮件。");
+                    $("#verifyTipA").html("<span id='time'>60</span>秒后可重发");
+                    $("#sendVerifyButton").addClass("unclickable");
+                    $("#sendVerifyButton").attr("disabled", true); // 发送期间不允许再点击
+                    countDown();
+                }
+            } else if (data==1) {
+                console.log('用户已存在，验证码未发送');
+                var hint = $("#signup-email").parents(".form-group").find(".error-notic");
+                hint.text("该邮箱已经被注册");
+                hint.fadeIn(100);
+                return false;
             }
         }
     });  
